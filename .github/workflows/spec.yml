@@ -9,7 +9,3 @@ jobs:
 
       - name: Cypress run
         uses: cypress-io/github-action@v2
-        with:
-          start: npm start
-          spec: cypress/integration/e2e/feedback.spec.js
-          browser: chrome
