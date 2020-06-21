@@ -9,13 +9,14 @@ jobs:
     uses: actions/setup-node@v1
     with:
       node-version: '12.x'
-    - name: Install dependencies
+    
+  - name: Install dependencies
     run: npm install
       
-    - name: Checkout
-        uses: actions/checkout@v1
+  - name: Checkout
+      uses: actions/checkout@v1
 
-      - name: Cypress run
-        uses: cypress-io/github-action@v2
-        with:
-          spec: cypress/integration/e2e/feedback.spec.js
+  - name: Cypress run
+      uses: cypress-io/github-action@v2
+      with:
+        spec: cypress/integration/e2e/feedback.spec.js
