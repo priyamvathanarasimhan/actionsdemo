@@ -1,21 +1,21 @@
 name: Chrome headless
-
 on: [push]
-
 jobs:
-  build:
+  cypress-run:
     runs-on: macos-latest
-
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v1
+
       - name: Use Node.js
         uses: actions/setup-node@v1
         with:
           node-version: '12.x'
       - run: npm install
-      - run: npm run build --if-present
-      - run: npm test
+
       - name: Cypress run
-      - uses: cypress-io/github-action@v2
+        uses: cypress-io/github-action@v2
         with:
+          start: npm start
           spec: cypress/integration/e2e/feedback.spec.js
+          browser: chrome
