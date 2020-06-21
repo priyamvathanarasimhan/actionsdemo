@@ -5,9 +5,8 @@ jobs:
     runs-on: macos-latest
     strategy:
     fail-fast: false
-      matrix:
-        
-        containers: [1, 2]
+    matrix:
+      containers: [1, 2]
     steps:
       - name: Checkout
         uses: actions/checkout@v1
@@ -23,7 +22,7 @@ jobs:
         with:
           start: npm start
           spec: cypress/integration/e2e/*.spec.js
-          parallel : true
+          parallel: true
           record: true
           group: 'Actions example'
           browser: chrome
