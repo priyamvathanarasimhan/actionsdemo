@@ -18,4 +18,5 @@ jobs:
         with:
           start: npm start
           spec: cypress/integration/e2e/feedback.spec.js
+          spec : cypress/integration/e2e/forgotten-password.spec.js
           browser: chrome
