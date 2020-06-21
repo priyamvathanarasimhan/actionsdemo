@@ -17,5 +17,5 @@ jobs:
         uses: cypress-io/github-action@v2
         with:
           start: npm start
-          spec: cypress/integration/e2e/*.spec.js
+          project: cypress/integration/e2e/*.spec.js
           browser: chrome
