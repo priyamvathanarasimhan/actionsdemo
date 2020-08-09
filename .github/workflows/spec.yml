@@ -11,15 +11,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '12.x'
-      - run: npm install
-
-      - name: Cypress run
-        uses: cypress-io/github-action@v2
-        with:
-          start: npm start
-          spec: cypress/integration/e2e/*.spec.js
-          browser: chrome
-
       - name: Determine npm cache directory
         id: npm-cache
         run: |
@@ -33,3 +24,11 @@ jobs:
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
+      - run: npm install
+
+      - name: Cypress run
+        uses: cypress-io/github-action@v2
+        with:
+          start: npm start
+          spec: cypress/integration/e2e/*.spec.js
+          browser: chrome
