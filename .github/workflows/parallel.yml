@@ -11,9 +11,9 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '12.x'
-        
+
       - name: Set env variables
-      uses: ./packages/cache/__tests__/__fixtures__/
+        uses: ./packages/cache/__tests__/__fixtures__/
 
       - name: Install root npm packages
         run: npm ci
@@ -23,7 +23,7 @@ jobs:
           npm ci
           npm run tsc
         working-directory: packages/cache
-    
+
       - name: Generate files in working directory
         shell: bash
         run: packages/cache/__tests__/create-cache-files.sh ${{ runner.os }} test-cache
@@ -32,7 +32,7 @@ jobs:
         shell: bash
         run: packages/cache/__tests__/create-cache-files.sh ${{ runner.os }} ~/test-cache
 
-    # We're using node -e to call the functions directly available in the @actions/cache package
+      # We're using node -e to call the functions directly available in the @actions/cache package
       - name: Save cache using saveCache()
         run: |
           node -e "Promise.resolve(require('./packages/cache/lib/cache').saveCache(['test-cache','~/test-cache'],'test-${{ runner.os }}-${{ github.run_id }}'))"
