@@ -12,6 +12,7 @@ jobs:
         with:
           node-version: '12.x'
       - run: npm install
+      
 
       - name: Cypress run
         uses: cypress-io/github-action@v2
@@ -19,3 +20,18 @@ jobs:
           start: npm start
           spec: cypress/integration/e2e/*.spec.js
           browser: chrome
+
+
+    - name: Determine npm cache directory
+      id: npm-cache
+      run: |
+        echo "::set-output name=dir::$(npm config get cache)"
+    - name: Restore npm cache
+      uses: actions/cache@v2
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-build-${{ env.cache-name }}-
+          ${{ runner.os }}-build-
+          ${{ runner.os }}-
