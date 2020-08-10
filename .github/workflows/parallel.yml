@@ -11,62 +11,22 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '12.x'
-
-      - name: Set env variables
-       uses: ./packages/cache/__tests__/__fixtures__/
-
-      - name: Install root npm packages
-        run: npm c
-
-      - name: Compile cache package
+      - name: Determine npm cache directory
+        id: npm-cache
         run: |
-          npm ci
-          npm run tsc
-        working-directory: packages/cache
-
-      - name: Generate files in working directory
-        shell: bash
-        run: packages/cache/__tests__/create-cache-files.sh ${{ runner.os }} test-cache
-
-      - name: Generate files outside working directory
-        shell: bash
-        run: packages/cache/__tests__/create-cache-files.sh ${{ runner.os }} ~/test-cache
-
-      # We're using node -e to call the functions directly available in the @actions/cache package
-      - name: Save cache using saveCache()
-        run: |
-          node -e "Promise.resolve(require('./packages/cache/lib/cache').saveCache(['test-cache','~/test-cache'],'test-${{ runner.os }}-${{ github.run_id }}'))"
-      - name: Delete cache folders before restoring
-        shell: bash
-        run: |
-          rm -rf test-cache
-          rm -rf ~/test-cache
-      - name: Restore cache using restoreCache() with http-client
-        run: |
-          node -e "Promise.resolve(require('./packages/cache/lib/cache').restoreCache(['test-cache','~/test-cache'],'test-${{ runner.os }}-${{ github.run_id }}',[],{useAzureSdk: false}))"
-      - name: Verify cache restored with http-client
-        shell: bash
-        run: |
-          packages/cache/__tests__/verify-cache-files.sh ${{ runner.os }} test-cache
-          packages/cache/__tests__/verify-cache-files.sh ${{ runner.os }} ~/test-cache
-      - name: Delete cache folders before restoring
-        shell: bash
-        run: |
-          rm -rf test-cache
-          rm -rf ~/test-cache
-      - name: Restore cache using restoreCache() with Azure SDK
-        run: |
-          node -e "Promise.resolve(require('./packages/cache/lib/cache').restoreCache(['test-cache','~/test-cache'],'test-${{ runner.os }}-${{ github.run_id }}'))"
-      - name: Verify cache restored with Azure SDK
-        shell: bash
-        run: |
-          packages/cache/__tests__/verify-cache-files.sh ${{ runner.os }} test-cache
-          packages/cache/__tests__/verify-cache-files.sh ${{ runner.os }} ~/test-cache
+          echo "::set-output name=dir::$(npm config get cache)"
+      - name: Restore npm cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
       - run: npm install
 
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
           start: npm start
-          spec: cypress/integration/*/*.spec.js
+          spec: cypress/integration/e2e/*.spec.js
           browser: chrome
