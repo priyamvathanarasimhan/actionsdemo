@@ -12,8 +12,8 @@ jobs:
         with:
           node-version: '12.x'
 
-      - name: Set env variables
-        uses: ./packages/cache/__tests__/__fixtures__/
+      # - name: Set env variables
+      # uses: ./packages/cache/__tests__/__fixtures__/
 
       - name: Install root npm packages
         run: npm ci
