@@ -16,7 +16,7 @@ jobs:
        uses: ./packages/cache/__tests__/__fixtures__/
 
       - name: Install root npm packages
-        run: npm ci
+        run: npm c
 
       - name: Compile cache package
         run: |

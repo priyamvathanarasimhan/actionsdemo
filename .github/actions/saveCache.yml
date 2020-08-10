@@ -1,7 +1,0 @@
-const cache = require('@actions/cache');
-const paths = [
-'node_modules',
-'packages/*/node_modules/'
-]
-const key = 'npm-foobar-d5ea0750'
-const cacheId = await cache.saveCache(paths, key)
