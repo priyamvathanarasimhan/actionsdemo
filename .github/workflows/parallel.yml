@@ -6,15 +6,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-
-      - uses: actions/checkout@v2
-      - name: 'Configure AWS Credentials'
-        uses: 'aws-actions/configure-aws-credentials@v1'
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_PROD }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_PROD }}
-          aws-region: eu-west-1
-
+        
       - name: Determine npm cache directory
         id: npm-cache
         run: |
