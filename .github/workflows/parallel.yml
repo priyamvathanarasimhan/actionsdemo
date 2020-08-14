@@ -2,15 +2,19 @@ name: Chrome headless
 on: [push]
 jobs:
   cypress-run:
-    runs-on: macos-latest
+    runs-on: ubuntu-16.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
 
-      - name: Use Node.js
-        uses: actions/setup-node@v1
+      - uses: actions/checkout@v2
+      - name: 'Configure AWS Credentials'
+        uses: 'aws-actions/configure-aws-credentials@v1'
         with:
-          node-version: '12.x'
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_PROD }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_PROD }}
+          aws-region: eu-west-1
+
       - name: Determine npm cache directory
         id: npm-cache
         run: |
@@ -18,15 +22,44 @@ jobs:
       - name: Restore npm cache
         uses: actions/cache@v2
         with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-
+            ${{ runner.os }}-node-
+
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
       - run: npm install
 
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
+          install: true
+          record: false
+          cache-key: node-v${{ matrix.node }}-on-${{ runner.os }}-hash-${{ hashFiles('package-lock.json') }}
           start: npm start
           spec: cypress/integration/e2e/*.spec.js
           browser: chrome
+
+      #- name: Take photo of github.com
+      #uses: 'lannonbr/puppeteer-screenshot-action@1.0.0'
+      #with:
+      #url: https://github.com
+
+      #- name: Merge test report
+      #run: npm run merge_report
+
+      #- name: Generate HTML report
+      #run: npm run generate_report_onPublic
+      - name: Check if screenshots folder exists
+        if: always()
+        run: test -d cypress/screenshots
+
+      - name: When present, upload screenshots of test failures
+        uses: actions/upload-artifact@v2-preview
+        if: success()
+        with:
+          name: cypress-screenshots
+          path: cypress/**/*
