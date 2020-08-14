@@ -2,11 +2,15 @@ name: Chrome headless
 on: [push]
 jobs:
   cypress-run:
-    runs-on: ubuntu-16.04
+    runs-on: macos-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
-        
+        uses: actions/checkout@v1
+
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
       - name: Determine npm cache directory
         id: npm-cache
         run: |
@@ -18,34 +22,17 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
-
-      - name: Use Node.js
-        uses: actions/setup-node@v1
-        with:
-          node-version: '12.x'
+        
       - run: npm install
 
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
-          install: true
-          record: false
-          cache-key: node-v${{ matrix.node }}-on-${{ runner.os }}-hash-${{ hashFiles('package-lock.json') }}
           start: npm start
           spec: cypress/integration/e2e/*.spec.js
           browser: chrome
 
-      #- name: Take photo of github.com
-      #uses: 'lannonbr/puppeteer-screenshot-action@1.0.0'
-      #with:
-      #url: https://github.com
-
-      #- name: Merge test report
-      #run: npm run merge_report
-
-      #- name: Generate HTML report
-      #run: npm run generate_report_onPublic
-      - name: Check if screenshots folder exists
+       - name: Check if screenshots folder exists
         if: always()
         run: test -d cypress/screenshots
 
