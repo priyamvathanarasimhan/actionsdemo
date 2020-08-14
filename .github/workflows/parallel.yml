@@ -22,7 +22,7 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
-        
+
       - run: npm install
 
       - name: Cypress run
@@ -32,7 +32,7 @@ jobs:
           spec: cypress/integration/e2e/*.spec.js
           browser: chrome
 
-       - name: Check if screenshots folder exists
+      - name: Check if screenshots folder exists
         if: always()
         run: test -d cypress/screenshots
 
