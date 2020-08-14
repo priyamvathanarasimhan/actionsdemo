@@ -30,4 +30,4 @@ jobs:
         if: success()
         with:
           name: cypress-screenshots
-          path: cypress/**/*
+          path: cypress/screnshots/*.txt
