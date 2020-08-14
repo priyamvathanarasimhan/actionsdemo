@@ -21,13 +21,19 @@ jobs:
           spec: cypress/integration/e2e/*.spec.js
           browser: chrome
 
-      - name: Check if screenshots folder exists
-        if: always()
-        run: test -d cypress/screenshots
+      #- name: Check if screenshots folder exists
+        #if: always()
+        #run: test -d cypress/screenshots
 
-      - name: When present, upload screenshots of test failures
-        uses: actions/upload-artifact@v2-preview
-        if: success()
+      #- name: When present, upload screenshots of test failures
+        #uses: actions/upload-artifact@v2-preview
+        #if: failure()
+        #with:
+          #name: cypress-screenshots
+          #path: cypress/screnshots/*.txt
+
+      - uses: actions/upload-artifact@v2
         with:
-          name: cypress-screenshots
-          path: cypress/screnshots/*.txt
+          name: Download-desktop-screenshots
+          path: screnshots
+      - run: rm ./screenshots/*
